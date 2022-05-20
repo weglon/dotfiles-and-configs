@@ -2,7 +2,7 @@ set path+=**
 set modelines=0
 set autoread
 au FocusGained,BufEnter * :silent! !
-set encoding=utf-8
+set encoding=UTF-8
 set visualbell
 set backspace=indent,eol,start
 set nobackup
@@ -17,6 +17,7 @@ set lazyredraw
 set showmatch
 set hlsearch incsearch ignorecase smartcase
 set autochdir
+set nocompatible 
 set hidden
 set wildmenu wildmode=list:longest,full
 set laststatus=2 statusline=%F
@@ -26,13 +27,21 @@ set foldnestmax=1
 set foldlevelstart=1
 set termguicolors
 set noshowmode
+set conceallevel=1
 
-"General navigation  
+"Navigation  
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
-"Editor stuff
+
+"Resizing
+nnoremap <A-h> :vertical resize -5<CR> 
+nnoremap <A-l> :vertical resize +5<CR> 
+nnoremap <A-j> :resize +5<CR> 
+nnoremap <A-k> :resize -5<CR> 
+
+"Other editor stuff
 nnoremap <C-s> :w<CR> :call CocAction('runCommand', 'prettier.formatFile')<CR>
 inoremap <C-s> <Esc>:w<CR>:call CocAction('runCommand', 'prettier.formatFile')<CR>a
 nnoremap <C-z> u
@@ -54,6 +63,7 @@ tnoremap <Esc> <C-\><C-n><C-w>k
 
 "Bracket and qoute pairing
 inoremap " ""<left>
+inoremap ` ``<left>
 inoremap ' ''<left>
 inoremap ( ()<left>
 inoremap [ []<left>
@@ -61,86 +71,146 @@ inoremap { {}<left>
 inoremap {;<CR> {<CR>};<ESC>O
 
 call plug#begin('~/.local/share/nvim/plugged')
-  " Basic utilities
+  " Essentials
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'preservim/nerdtree'
+  Plug 'scrooloose/nerdtree'  
   Plug 'honza/vim-snippets'
   Plug 'SirVer/ultisnips'
-  Plug 'ryanoasis/vim-devicons'
   Plug 'itchyny/lightline.vim'
-  Plug 'ap/vim-css-color'  
-  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
-  " Themes 'n stuff
+  " Syntax highlighting
+  " Treesitter for gruvbox, alduin
+  " Polygot for everforest, sonokai
+  " Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  " Plug 'sheerun/vim-polyglot'
+  " Plug 'tree-sitter/tree-sitter-javascript'
+  Plug 'pangloss/vim-javascript'
+  Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' }
+
+  " Themes
   Plug 'sjl/badwolf'
   Plug 'junegunn/seoul256.vim'
-  Plug 'NLKNguyen/papercolor-theme'
+  Plug 'shinchu/lightline-gruvbox.vim'
   Plug 'savq/melange'
   Plug 'joshdick/onedark.vim'
-  Plug 'ayu-theme/ayu-vim'
   Plug 'morhetz/gruvbox'
-  Plug 'lifepillar/vim-gruvbox8'
   Plug 'sainnhe/gruvbox-material'
   Plug 'sainnhe/sonokai'
+  Plug 'tomasr/molokai'
+  Plug 'AlessandroYorba/Alduin'
+  Plug 'romainl/Apprentice'
+  Plug 'xadillax/vim-mir2-colorscheme'
+  Plug 'straw/vim-strawimodo'
+  Plug 'scottymoon/vim-twilight'
+  Plug 'ahmedabdulrahman/aylin.vim'
+  Plug 'sainnhe/everforest'
+
+  " icons
+  Plug 'ryanoasis/vim-devicons'
+  Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+
 call plug#end()
 
-" `'default'`, `'atlantis'`, `'andromeda'`, `'shusia'`, `'maia'`, `'espresso'`
-" let g:sonokai_cursor = 'orange'
-" let g:sonokai_style = 'espresso'
-" let g:sonokai_transparent_background = 1
-
-"let g:gruvbox_material_enable_italic = 1
-"let g:gruvbox_material_enable_bold = 1
-"let g:gruvbox_material_background = 'soft'
-"let g:gruvbox_material_statusline_style = 'original'
-"let g:gruvbox_material_diagnostic_line_highlight = 1
-"let g:gruvbox_material_palette = 'mix'
-
-let g:seoul256_background = 236
-let g:seoul256_srgb = 1
-
 let g:lightline = {
-     \ 'colorscheme': 'sonokai',
-     \ 'active': {
-     \   'left': [ ['mode', 'paste'],
-     \             ['fugitive', 'readonly', 'filename', 'modified'] ],
-     \   'right': [ [ 'lineinfo' ], ['percent'] ]
-     \ },
-     \ 'component': {
-     \   'readonly': '%{&filetype=="help"?"":&readonly?"\ue0a2":""}',
-     \   'modified': '%{&filetype=="help"?"":&modified?"\ue0a0":&modifiable?"":"-"}',
-     \   'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'
-     \ },
-     \ 'component_visible_condition': {
-     \   'readonly': '(&filetype!="help"&& &readonly)',
-     \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
-     \   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
-     \ },
-     \ 'separator': { 'left': "\ue0b4", 'right': "\ue0b6" },
-     \ 'subseparator': { 'left': "\ue0b5", 'right': "\ue0b7" },
-     \ }
-
-" let g:lightline = {
-" \ 'separator': { 'left': "\ue0b4", 'right': "\ue0b6" },
-"   \ 'subseparator': { 'left': "\ue0b5", 'right': "\ue0b7" },
-"     \ 'colorscheme': 'sonokai'
-"     \ }
+    \ 'colorscheme': 'gruvbox', 
+    \ 'active': {
+    \   'left': [ [ 'mode', 'paste' ],
+    \             [ 'gitbranch', 'filename', 'modified' ] ],
+    \   'right': [['lineinfo'], ['percent']] 
+    \ },
+    \ 'component_function': {
+    \   'mode': 'LightlineMode',
+    \ },
+    \ 'separator': { 'left': '', 'right': ''}
+    \ }
 
 
-set foldmethod=expr
-set foldexpr=nvim_treesitter#foldexpr()
+function! LightlineMode()
+  return expand('%:t') =~# '^__Tagbar__' ? 'Tagbar':
+    \ expand('%:t') ==# 'ControlP' ? 'CtrlP' :
+    \ &filetype ==# 'javascript' ? '' :
+    \ &filetype ==# 'json' ? '' :
+    \ &filetype ==# 'python' ? '' :
+    \ &filetype ==# 'css' ? '' :
+    \ &filetype ==# 'vim' ? '' :
+    \ &filetype ==# 'html' ? '' :
+    \ &filetype ==# 'lua' ? '' : 
+    \ &filetype ==# 'typescript' ? '' : 
+    \ &filetype ==# 'java' ? '' : 
+    \ &filetype ==# 'cpp' ? 'ﭱ' : 
+    \ &filetype ==# 'c' ? '' : 
+    \ ''
+endfunction
 
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  -- ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-  highlight = {
-    enable = true,              -- false will disable the whole extension
-    -- disable = { "c", "rust" },  -- list of language that will be disabled
-  },
-}
-EOF
+let s:brown = "6e4c30"
+let s:aqua =  "8ec07c"
+let s:blue = "83a598"
+let s:darkBlue = "458588"
+let s:purple = "d3869b"
+let s:lightPurple = "458588"
+let s:red = "af3a03"
+let s:beige = "a89984"
+let s:yellow = "d79921"
+let s:darkOrange = "d65d0e"
+let s:orange = "fe8019"
+let s:pink = "db76a4"
+let s:salmon = "db8e76"
+let s:green = "98971a"
+let s:lightGreen = "98971a"
+let s:white = "f9f5d7"
+let s:rspec_red = 'fb4934'
+let s:git_orange = 'fe8019'
 
-colorscheme gruvbox
+" let g:NERDTreeExtensionHighlightColor = {}
+" let g:NERDTreeExtensionHighlightColor['css'] = s:blue
+" let g:NERDTreeExtensionHighlightColor['cpp'] = s:blue
+" let g:NERDTreeExtensionHighlightColor['c'] = s:blue
+" let g:NERDTreeExtensionHighlightColor['h'] = s:blue
+" let g:NERDTreeExtensionHighlightColor['js'] = s:yellow
+" let g:NERDTreeExtensionHighlightColor['ts'] = s:yellow
+" let g:NERDTreeExtensionHighlightColor['json'] = s:pink
+" let g:NERDTreeExtensionHighlightColor['node_modules'] = s:pink
+" let g:NERDTreeExtensionHighlightColor['html'] = s:darkOrange
+" let g:NERDTreeExtensionHighlightColor['xml'] = s:darkBlue
+" let g:NERDTreeExtensionHighlightColor['txt'] = s:beige
+" let g:NERDTreeExtensionHighlightColor['yml'] = s:darkBlue
+" let g:NERDTreeExtensionHighlightColor['java'] = s:red
+" let g:NERDTreeExtensionHighlightColor['class'] = s:red
+" let g:NERDTreeExtensionHighlightColor['jar'] = s:red
+" let g:NERDTreeExtensionHighlightColor['kt'] = s:purple
+" let g:NERDTreeExtensionHighlightColor['sh'] = s:green
+" let g:NERDTreeExtensionHighlightColor['git'] = s:git_orange
+" let g:NERDTreeExtensionHighlightColor['png'] = s:beige
+" let g:NERDTreeExtensionHighlightColor['jpg'] = s:beige
+" let g:NERDTreeExtensionHighlightColor['.gitignore'] = s:git_orange
+
+let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeExactMatchHighlightFullName = 1
+let g:NERDTreePatternMatchHighlightFullName = 1
+
+" set foldmethod=expr
+" set foldexpr=nvim_treesitter#foldexpr()
+
+" Syntax highlighting pt2
+" lua <<EOF
+"   require'nvim-treesitter.configs'.setup {
+"     ensure_installed = "all",
+"     sync_install = false,
+"
+"     highlight = {
+"       enable = true,
+"       additional_vim_regex_highlighting = false,
+"     },
+"   }
+" EOF
+" let g:polyglot_disabled = ['python']
+
+let g:semshi#always_update_all_highlights = v:true
+let g:javascript_conceal_function = "ƒ"
+let g:javascript_conceal_this = "@"
+
+colorscheme gruvbox-material
+
 hi Normal guibg=NONE ctermbg=NONE
 hi EndOfBuffer guibg=NONE ctermbg=NONE
 
